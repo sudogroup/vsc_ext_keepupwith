@@ -1,9 +1,8 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
-import { AsyncLocalStorage } from 'async_hooks';
-import { worker } from 'cluster';
 import * as vscode from 'vscode';
 import { InputBoxOptions } from 'vscode';
+import {Connection} from "./connection";
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -18,10 +17,9 @@ export function activate(context: vscode.ExtensionContext) {
 
 		const keyTextField = vscode.window.showInputBox(options).then((key) => {
 
-			if (key != null){
-				// TODO, Save the key into local storage
-				//new AsyncLocalStorage().enterWith({"RegistrationKey" : key})
-			}
+			if (key != null)
+				context.workspaceState.update("RegistrationKey",key);
+			
 
 		});
 	});
@@ -32,7 +30,8 @@ export function activate(context: vscode.ExtensionContext) {
 		if (workspaceName == undefined)
 			workspaceName = "idling";
 
-		// TODO, Retrive key from local storage	
+
+		vscode.window.showInformationMessage(context.workspaceState.get("RegistrationKey","Not set up yet"));
 
 	});
 
@@ -42,13 +41,22 @@ export function activate(context: vscode.ExtensionContext) {
 	if (workspaceName == undefined)
 		workspaceName = "idling";
 
-	// TODO, Send the name to the API	
+
+	const registedKey = context.workspaceState.get("RegistrationKey","Not set up yet");
+	if (registedKey != "Not set up yet")
+		Connection.updateStatus(workspaceName, registedKey);
 
 	context.subscriptions.push(registerKey);
 	context.subscriptions.push(viewRegisterKey);
 }
 
 // this method is called when your extension is deactivated
-export function deactivate() {
-	// TODO, Send the deactivation to the API
+// TODO, the method with the passed context does not fire, possible solution
+// is to avoid the storage manager from extensin API
+export function deactivate(context : vscode.ExtensionContext) {
+
+	const registedKey = context.workspaceState.get("RegistrationKey","Not set up yet");
+	if (registedKey != "Not set up yet")
+		Connection.updateStatus("", registedKey, States);
+
 }
