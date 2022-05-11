@@ -57,6 +57,6 @@ export function deactivate(context : vscode.ExtensionContext) {
 
 	const registedKey = context.workspaceState.get("RegistrationKey","Not set up yet");
 	if (registedKey != "Not set up yet")
-		Connection.updateStatus("", registedKey, States);
+		Connection.updateStatus("", registedKey, 0);
 
 }
