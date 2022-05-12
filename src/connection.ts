@@ -5,11 +5,15 @@ export class Connection {
      static async updateStatus(workspaceName : string, key : String, status = 1) {
         console.log(status + "_----------_");
         const url = "";
-        const bodyData = "";
+        const bodyData = {
+            "key" : key,
+            "workspaceName" : workspaceName,
+            "status" : status
+        };
         
         return await fetch(url, {
             method: 'POST',
-            body: bodyData,
+            body: JSON.stringify(bodyData),
             headers: {'Content-Type': 'application/json; charset=UTF-8'}
         });
     }

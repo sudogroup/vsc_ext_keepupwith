@@ -4,6 +4,8 @@ import * as vscode from 'vscode';
 import { InputBoxOptions } from 'vscode';
 import {Connection} from "./connection";
 
+let key : string;
+
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
@@ -42,21 +44,20 @@ export function activate(context: vscode.ExtensionContext) {
 		workspaceName = "idling";
 
 
-	const registedKey = context.workspaceState.get("RegistrationKey","Not set up yet");
-	if (registedKey != "Not set up yet")
+	const registedKey = context.workspaceState.get("RegistrationKey", null);
+	if (registedKey != null){
+		key = registedKey;
 		Connection.updateStatus(workspaceName, registedKey);
+	}
 
 	context.subscriptions.push(registerKey);
 	context.subscriptions.push(viewRegisterKey);
 }
 
 // this method is called when your extension is deactivated
-// TODO, the method with the passed context does not fire, possible solution
-// is to avoid the storage manager from extensin API
-export function deactivate(context : vscode.ExtensionContext) {
+export function deactivate() {
 
-	const registedKey = context.workspaceState.get("RegistrationKey","Not set up yet");
-	if (registedKey != "Not set up yet")
-		Connection.updateStatus("", registedKey, 0);
+	if (key != null)
+		Connection.updateStatus("", key, 0);
 
 }
