@@ -8,7 +8,8 @@ export class Connection {
         const bodyData = {
             "key" : key,
             "workspaceName" : workspaceName,
-            "status" : status
+            "status" : status,
+            "timestamp" : + new Date()
         };
         
         return await fetch(url, {

@@ -17,24 +17,19 @@ export function activate(context: vscode.ExtensionContext) {
 			placeHolder: "Enter the registration key"
 		};
 
-		const keyTextField = vscode.window.showInputBox(options).then((key) => {
+		const keyTextField = vscode.window.showInputBox(options).then((inputText) => {
 
-			if (key != null)
-				context.workspaceState.update("RegistrationKey",key);
+			if (inputText != null){
+				context.workspaceState.update("RegistrationKey", inputText);
+				key = key;
+			}
 			
 
 		});
 	});
 
 	let viewRegisterKey = vscode.commands.registerCommand('keepwithmestatus.viewRegisterKey', () => {
-		let workspaceName = vscode.workspace.name;
-	
-		if (workspaceName == undefined)
-			workspaceName = "idling";
-
-
 		vscode.window.showInformationMessage(context.workspaceState.get("RegistrationKey","Not set up yet"));
-
 	});
 
 
@@ -45,6 +40,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 
 	const registedKey = context.workspaceState.get("RegistrationKey", null);
+
 	if (registedKey != null){
 		key = registedKey;
 		Connection.updateStatus(workspaceName, registedKey);
